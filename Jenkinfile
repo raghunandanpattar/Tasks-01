@@ -1,28 +1,27 @@
 pipeline {
     agent any
-
     stages {
-        stage('checkout'){
-            steps{
-                checkout scm
-            }
-
-        }
-        stage ("terraform init") {
+        stage('checkout') {
             steps {
-                sh ("terraform init -reconfigure")
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/raghunandanpattar/Tasks-01']])
             }
         }
-        stage("plan") {
+        stage ("init"){
+            steps{
+                sh ('terraform init')
+            }
+        }
+        stage ("plan") {
             steps {
                 sh ('terraform plan')
             }
         }
-        stage ('Action') {
+        stage ('action') {
             steps {
-                echo "Terraform action is --> ${action}"
-                sh {'terraform ${action} --auto-approve'}
+                echo "Terraform action is --> ${action} "
+                sh('terraform ${action} --auto-approve')
             }
+            
         }
-    }
-}
+    } 
+}  
